@@ -38,7 +38,7 @@ contests = ["Presidential Electors", "United States Senator", "Attorney General"
 			"Auditor General", "State Treasurer", "Representative in Congress", "Representative in the General Assembly"]
 
 
-st.image("Lehigh-Commissioner-Districts.png")
+st.image("static/Lehigh-Commissioner-Districts.png")
 
 #TODO Add grouped county level data and voter turnout data
 
