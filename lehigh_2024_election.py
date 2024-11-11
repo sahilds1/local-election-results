@@ -11,6 +11,8 @@ import pandas as pd
 
 st.title("Lehigh County 2024 Election Results")
 
+#TODO: Add app testing https://docs.streamlit.io/develop/concepts/app-testing/get-started
+
 @st.cache_data
 def load_data():
 	"""
