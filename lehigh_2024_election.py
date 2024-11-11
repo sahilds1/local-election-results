@@ -21,7 +21,8 @@ def load_data():
 
 	"""
 
-	data = pd.read_csv("Precincts_8.csv")
+	#TODO: Read data from https://www.livevoterturnout.com/ENR/lehighpaenr/8/en/Index_8.html
+	data = pd.read_csv("data/Precincts_8.csv")
 
 	municipalities = []
 	for precinct in list(data['Precinct']):
@@ -32,6 +33,7 @@ def load_data():
 
 	return data, municipalities
 
+
 raw_data, municipalities=load_data()
 
 contests = ["Presidential Electors", "United States Senator", "Attorney General", 
@@ -41,7 +43,9 @@ contests = ["Presidential Electors", "United States Senator", "Attorney General"
 st.image("static/Lehigh-Commissioner-Districts.png", caption="Image credit: https://lehighdemocrats.org/faq-lehigh-county-government/")
 
 
-#TODO Add grouped county level data and voter turnout data
+#TODO: Add  voter turnout data
+#TODO: Add trends from 2016 to 2020 to 2024
+#TODO: Add a school district overlay 
 
 st.subheader("Grouped Municipal Level Data")
 st.text("Sort columns by clicking on their headers")
