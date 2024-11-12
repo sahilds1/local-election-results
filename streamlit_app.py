@@ -14,40 +14,47 @@ st.title("Lehigh County 2024 Election Results")
 
 # TODO: Add app testing https://docs.streamlit.io/develop/concepts/app-testing/get-started
 
-
 @st.cache_data
-def load_data():
+def load_data()->pd.DataFrame:
     """
-    Load raw precinct level results from downloaded CSV
+    Load raw precinct level results
 
     Returns
     -------
-    # TODO: ADD  docstring  for load_data()
+    pd.DataFrame
 
     """
 
-    # TODO: Read data from https://www.livevoterturnout.com/ENR/lehighpaenr/8/en/Index_8.html
     # Row per precinct per candidate/choice per race
-    data = pd.read_csv("data/Precincts_8.csv")
+    data = pd.read_csv("https://www.livevoterturnout.com/ENR/lehighpaenr/8/Precincts_8.csv", skiprows=2)
 
     # TODO: Switch the relevent columnts to integers to run sums and sorts
 
-    municipalities = []
-    for precinct in list(data["Precinct"]):
-        # TODO: Add striping whitespaces and punctuation to regex pattern
-        municipalities.append(
-            re.match(r"\D+", precinct)
-            .group(0)
-            .rstrip(string.whitespace)
-            .rstrip(string.punctuation)
-        )
-
-    data["Municipality"] = municipalities
-
-    return data, municipalities
+    return data
 
 
-raw_data, municipalities = load_data()
+raw_data = load_data()
+
+
+municipalities = []
+for precinct in list(raw_data["Precinct"]):
+    # TODO: Add striping whitespaces and punctuation to regex pattern
+    municipalities.append(
+        re.match(r"\D+", precinct)
+        .group(0)
+        .rstrip(string.whitespace)
+        .rstrip(string.punctuation)
+    )
+
+raw_data["Municipality"] = municipalities
+
+
+# TODO: Display a map with with a scatterplot overlaid onto it using st.map: https://docs.streamlit.io/develop/api-reference/charts/st.map
+st.image(
+    "static/Lehigh-Commissioner-Districts.png",
+    caption="Image credit: https://lehighdemocrats.org/faq-lehigh-county-government/",
+)
+
 
 contests = [
     "Presidential Electors",
@@ -60,19 +67,13 @@ contests = [
 ]
 
 
-# TODO: Display a map with with a scatterplot overlaid onto it using st.map: https://docs.streamlit.io/develop/api-reference/charts/st.map
-st.image(
-    "static/Lehigh-Commissioner-Districts.png",
-    caption="Image credit: https://lehighdemocrats.org/faq-lehigh-county-government/",
-)
-
-
 st.subheader("Grouped Municipal Level Data")
 # TODO: Add trends from 2016 to 2020 to 2024
 # TODO: Did Democrats win any contests in munis that Trump won?
 st.text("Sort columns by clicking on their headers")
-muni_to_filter = st.selectbox("Pick one municipality", set(municipalities))
+muni_to_filter = st.selectbox("Pick one municipality", sorted(set(municipalities)))
 contest_to_filter = st.selectbox("Pick one contest", contests)
+
 data = raw_data[
     (raw_data["Municipality"] == muni_to_filter)
     & raw_data["Contest Name"].str.contains(contest_to_filter)
@@ -83,9 +84,10 @@ agg_data = (
     .sum("Votes")
     .reset_index()
 )
-# TODO: Add  % column to the agg_data DataFrame
-st.dataframe(agg_data, use_container_width=True, hide_index=True)
-st.bar_chart(agg_data, x="Candidate Name", y="Votes", horizontal=True)
+
+agg_data['Percentage'] = [100*(votes / sum(agg_data['Votes'])) for votes in agg_data['Votes']]
+
+st.dataframe(agg_data.sort_values('Votes',ascending=False), use_container_width=True, hide_index=True)
 
 # TODO: Group precincts by school districts
 
