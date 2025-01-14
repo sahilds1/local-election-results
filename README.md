@@ -2,7 +2,7 @@
 
 A web application for analysis of the the 2024 US Elections in Lehigh County.
 
-Analzye the data: https://local-election-results.streamlit.app/
+Analyze the data: https://local-election-results.streamlit.app/
 
 
 ## License
